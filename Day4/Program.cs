@@ -1,12 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-int total = 0;
-Dictionary<int, int> scratchcardCount = new Dictionary<int, int>();
+
 using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
 {
     string? line = null;
     int index = 0;
+    int total = 0;
     int totalScratchcards = 0;
+    List<int> scratchcardCounts = new List<int>();
     while ((line = tr.ReadLine()) != null)
     {
         var scratchcardLine = line.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -14,10 +15,10 @@ using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
         var scratchcardNumbers = parts[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(p=> int.Parse(p.Trim()));
         var scratchcardWinningNumbers = parts[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(p=> int.Parse(p.Trim()));
 
-        if(!scratchcardCount.ContainsKey(index))
+        while(scratchcardCounts.Count <= index)
         {
-            scratchcardCount.Add(index, 1);
-        }
+            scratchcardCounts.Add(1);
+        } 
 
         var Numbers = scratchcardNumbers.ToArray();
         var WinningNumbers = scratchcardWinningNumbers.ToArray();
@@ -28,16 +29,17 @@ using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
         {
             for(int n = 0; n < MatchingNumbers.Count(); n++)
             {
-                if(!scratchcardCount.TryGetValue(index + 1 + n, out int count))
+
+                while (scratchcardCounts.Count <= index + 1 + n)
                 {
-                    scratchcardCount.Add(index + 1 + n, 1);
+                    scratchcardCounts.Add(1);
                 }
-                scratchcardCount[index + 1 + n] += scratchcardCount[index];
+                scratchcardCounts[index + 1 + n] += scratchcardCounts[index];
             }
         }
 
-        Console.WriteLine($"{index}.Count +=  {scratchcardCount[index]}");
-        totalScratchcards += scratchcardCount[index];
+        Console.WriteLine($"{index}.Count +=  {scratchcardCounts[index]}");
+        totalScratchcards += scratchcardCounts[index];
         total += Score;
         index++;
     }
