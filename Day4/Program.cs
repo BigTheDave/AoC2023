@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 int total = 0;
-Dictionary<int, Scratchcard> scratchcards = new Dictionary<int, Scratchcard>();
+Dictionary<int, int> scratchcardCount = new Dictionary<int, int>();
 using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
 {
     string? line = null;
@@ -14,43 +14,34 @@ using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
         var scratchcardNumbers = parts[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(p=> int.Parse(p.Trim()));
         var scratchcardWinningNumbers = parts[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(p=> int.Parse(p.Trim()));
 
-        var card = GetOrCreate(index);        
-        card.Numbers = scratchcardNumbers.ToArray();
-        card.WinningNumbers = scratchcardWinningNumbers.ToArray();
-        card.MatchingNumbers = scratchcardNumbers.Intersect(scratchcardWinningNumbers).ToArray();
-        
-        if(card.MatchingNumbers.Count() > 0)
+        if(!scratchcardCount.ContainsKey(index))
         {
-            for(int n = 0; n < card.MatchingNumbers.Count(); n++)
+            scratchcardCount.Add(index, 1);
+        }
+
+        var Numbers = scratchcardNumbers.ToArray();
+        var WinningNumbers = scratchcardWinningNumbers.ToArray();
+        var MatchingNumbers = scratchcardNumbers.Intersect(scratchcardWinningNumbers).ToArray();
+        var Score = MatchingNumbers.Count() > 0 ? (int)Math.Pow(2, MatchingNumbers.Count() - 1) : 0;
+
+        if (MatchingNumbers.Count() > 0)
+        {
+            for(int n = 0; n < MatchingNumbers.Count(); n++)
             {
-                var copyCard = GetOrCreate(index + 1 + n);
-                copyCard.Count += card.Count;                
+                if(!scratchcardCount.TryGetValue(index + 1 + n, out int count))
+                {
+                    scratchcardCount.Add(index + 1 + n, 1);
+                }
+                scratchcardCount[index + 1 + n] += scratchcardCount[index];
             }
         }
-        Console.WriteLine($"{index}.Count +=  {card.Count}");
-        totalScratchcards += card.Count;
-        total += card.Score;
+
+        Console.WriteLine($"{index}.Count +=  {scratchcardCount[index]}");
+        totalScratchcards += scratchcardCount[index];
+        total += Score;
         index++;
     }
 
     Console.WriteLine($"Part 1 Answer: {total}");
     Console.WriteLine($"Part 2 Answer: {totalScratchcards}");
-}
-Scratchcard GetOrCreate(int index)
-{
-    if (!scratchcards.TryGetValue(index, out var card))
-    {
-        card = new Scratchcard();
-        scratchcards.Add(index, card);
-    }
-
-    return card;
-}
-class Scratchcard
-{
-    public int[] Numbers;
-    public int[] WinningNumbers;
-    public int[] MatchingNumbers;
-    public int Count = 1;
-    public int Score => MatchingNumbers.Count() > 0 ? (int)Math.Pow(2, MatchingNumbers.Count() - 1) : 0;
 }
