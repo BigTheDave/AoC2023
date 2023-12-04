@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-
+System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+stopwatch.Start();
 using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
 {
     string? line = null;
@@ -38,12 +39,13 @@ using (TextReader tr = new StreamReader(File.OpenRead("input.txt")))
             }
         }
 
-        Console.WriteLine($"{index}.Count +=  {scratchcardCounts[index]}");
         totalScratchcards += scratchcardCounts[index];
         total += Score;
         index++;
     }
 
+    stopwatch.Stop();
     Console.WriteLine($"Part 1 Answer: {total}");
     Console.WriteLine($"Part 2 Answer: {totalScratchcards}");
+    Console.WriteLine($"in {stopwatch.ElapsedMilliseconds} ms");
 }
