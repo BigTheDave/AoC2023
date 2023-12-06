@@ -52,27 +52,39 @@ void Part2()
             .Skip(1)
             .Select(t => long.Parse(t.Replace(" ", "")))
             .First();
-        int waysToWin = 0;
+
+        long firstWin = 0;
+        long lastWin = 0;
         for (long timeHeld = 0; timeHeld < totalRaceTime; timeHeld++)
         {
             long timeRun = totalRaceTime - timeHeld;
             long distanceRun = (timeHeld * timeRun);
             if (distanceRun > distanceToBeat)
             {
-                //Console.WriteLine($"WIN Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
-                waysToWin++;
+                if (firstWin == 0)
+                {
+                    firstWin = timeHeld;
+                    Console.CursorLeft = 0;
+                    Console.WriteLine($"WIN Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
+                }
             }
             else
             {
-                //Console.WriteLine($"LOS Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
+                if (firstWin > 0)
+                {
+                    lastWin = timeHeld;
+                    Console.CursorLeft = 0;
+                    Console.WriteLine($"LOS Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
+                    break;
+                }
             }
-            if(timeHeld % 100 == 0)
+            if(timeHeld % 100000 == 0)
             {
                 Console.CursorLeft = 0;
                 Console.Write($"{timeHeld}/{totalRaceTime} {(timeHeld / (double)totalRaceTime * 100): 0.0}%");
             }
         } 
-        Console.WriteLine($"Part 2 Answer #{waysToWin} ways to win");
+        Console.WriteLine($"Part 2 Answer #{lastWin - firstWin} ways to win");
     }
 }
 Part1();
