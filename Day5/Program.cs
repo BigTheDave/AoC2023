@@ -181,6 +181,8 @@ void Part2()
             result.Add(range);
             return result;
         }
+
+        //Engulfs entire range
         if(range.Min < rangeMap.Source && range.Max > rangeMap.SourceMax)
         {
             result.Add(new Range()
@@ -202,7 +204,7 @@ void Part2()
             EnsureContinuity(result, range);
             return result;
         }
-
+        //One end inside
         if(range.Min < rangeMap.Source)
         {
             result.Add(new Range()
