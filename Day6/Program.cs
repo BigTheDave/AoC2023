@@ -23,12 +23,7 @@ void Part1()
                 int distanceRun = (timeHeld * timeRun);
                 if (distanceRun > distanceToBeat)
                 {
-                    Console.WriteLine($"WIN Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
                     waysToWin++;
-                } 
-                else
-                {
-                    Console.WriteLine($"LOS Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
                 }
             }
             answer *= waysToWin;
@@ -77,11 +72,6 @@ void Part2()
                     Console.WriteLine($"LOS Held {timeHeld} ms, Run {timeRun} ms {distanceRun} mm");
                     break;
                 }
-            }
-            if(timeHeld % 100000 == 0)
-            {
-                Console.CursorLeft = 0;
-                Console.Write($"{timeHeld}/{totalRaceTime} {(timeHeld / (double)totalRaceTime * 100): 0.0}%");
             }
         } 
         Console.WriteLine($"Part 2 Answer #{lastWin - firstWin} ways to win");
