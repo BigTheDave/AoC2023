@@ -1,8 +1,12 @@
-﻿string file = "input.txt";
+﻿
+
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 void Part1()
 {
-    using(TextReader reader = new StreamReader(file))
+    string file = "input.txt";
+    using (TextReader reader = new StreamReader(file))
     {
         string instructions = reader.ReadLine() ?? string.Empty;
         reader.ReadLine();
@@ -37,6 +41,8 @@ void Part1()
 
 void Part2()
 {
+    Console.WriteLine("PART 2===============================");
+    string file = "input.txt";
     using (TextReader reader = new StreamReader(file))
     {
         string instructions = reader.ReadLine() ?? string.Empty;
@@ -47,26 +53,37 @@ void Part2()
         {
             Nodes.Add(line.Substring(0, 3), new Tuple<string, string>(line.Substring(7, 3), line.Substring(12, 3)));
         }
-        var currentNode = "AAA";
-        Console.WriteLine($"Instruction count {instructions.Length}");
-        int steps = 0;
-        do
+        var startingNodes = Nodes.Select(t => t.Key).Where(t => t.EndsWith("A")).ToArray();
+        long currentLCM = 1;
+        foreach (var startingNode in startingNodes)
         {
-            switch (instructions[steps % instructions.Length])
+            var currentNode = startingNode;
+            int index = 0;
+            while (!currentNode.EndsWith("Z"))
             {
-                case 'L':
-                    currentNode = Nodes[currentNode].Item1;
-                    break;
-                case 'R':
-                    currentNode = Nodes[currentNode].Item2;
-                    break;
+                currentNode = instructions[index % instructions.Length] == 'L' ? Nodes[currentNode].Item1 : Nodes[currentNode].Item2;
+                index++;
             }
+            Console.WriteLine($"{startingNode} found {currentNode} in {index} steps");
+            currentLCM = LCM(currentLCM, index);
+        }
 
-            steps++;
-
-        } while (currentNode != "ZZZ");
-        Console.WriteLine($"Answer 2: {steps}");
+        Console.WriteLine($"Answer 2: {currentLCM} ");
     }
+}
+
+long LCM(long a, long b)
+{
+    var _A = Math.Max(a, b);
+    var _B = Math.Min(a, b);
+    for (long i = 1; i <= _A; i++)
+    {
+        if (_B * i % _A == 0)
+        {
+            return i * _B;
+        }
+    }
+    return _A;
 }
 
 Part1();
