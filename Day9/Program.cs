@@ -9,6 +9,7 @@ void Part1()
         while((line = reader.ReadLine()) != null)
         {
             var sequence = line.Split(' ').Select(t => long.Parse(t)).ToArray();
+            
             long nextNumber = sequence.Last();
 
             while (sequence.Any(t => t != sequence.First()))
@@ -71,5 +72,41 @@ void Part2()
         return result.ToArray();
     }
 }
+void Part2_TheSimpleWay()
+{
+    string file = "input.txt";
+    using (TextReader reader = new StreamReader(file))
+    {
+        string? line;
+        long total = 0;
+        while ((line = reader.ReadLine()) != null)
+        {
+            //Added .Reverse... that's it
+            var sequence = line.Split(' ').Select(t => long.Parse(t)).Reverse().ToArray();
+
+            long nextNumber = sequence.Last();
+
+            while (sequence.Any(t => t != sequence.First()))
+            {
+                sequence = GetDiffSequence(sequence);
+                nextNumber += sequence.Last();
+            }
+
+            total += nextNumber;
+            //Console.WriteLine($"{line} [{nextNumber}]");
+        }
+        Console.WriteLine($"Answer 2, The Simple Way: {total}");
+    }
+    long[] GetDiffSequence(long[] sequence)
+    {
+        List<long> result = new List<long>();
+        for (int i = 1; i < sequence.Length; i++)
+        {
+            result.Add(sequence[i] - sequence[i - 1]);
+        }
+        return result.ToArray();
+    }
+}
 Part1();
 Part2();
+Part2_TheSimpleWay();
